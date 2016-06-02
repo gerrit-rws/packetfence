@@ -61,6 +61,7 @@ use fingerbank::DB;
 use pf::cluster;
 use Time::HiRes qw(time);
 use pf::option82 qw(search_switch);
+use pf::dhcpd;
 
 pf::SwitchFactory->preloadConfiguredModules();
 
@@ -278,6 +279,11 @@ sub registertasks  {
         'option82_query_interval',
         sub {
             search_switch() if isenabled($Config{'network'}{'dhcpoption82logger'});
+    register_task (
+        'ping_dhcpd',
+        'ping_dhcpd_interval',
+        sub {
+            ping_dhcpd() if isenabled($cluster_enabled);
         }
     );
 }
