@@ -398,17 +398,16 @@ EOT
 
              if ($current_network->contains($ip)) {
                  my $network = $current_network2->network();
-                 my $prefix = $current_network2->network()->nprefix();
-                 my $mask = $current_network2->masklen();
-                 $prefix =~ s/\.$//;
+                 my $cidr = $network->cidr();
+                 $cidr =~ s/\.0//g;
                  if (defined($net{'next_hop'})) {
-                     $routed_networks .= "|| (&request:DHCP-Client-IP-Address < $prefix/$mask)";
+                     $routed_networks .= "|| (&request:DHCP-Client-IP-Address < $cidr)";
                      $tags{'config'} .= <<"EOT";
-		if ( ( (&request:DHCP-Gateway-IP-Address != 0.0.0.0) && (&request:DHCP-Gateway-IP-Address < $prefix/$mask) ) || (&request:DHCP-Client-IP-Address < $prefix/$mask) ) {
+		if ( ( (&request:DHCP-Gateway-IP-Address != 0.0.0.0) && (&request:DHCP-Gateway-IP-Address < $cidr) ) || (&request:DHCP-Client-IP-Address < $cidr) ) {
 EOT
                  } else {
                      $tags{'config'} .= <<"EOT";
-		if ( (&request:DHCP-Gateway-IP-Address == 0.0.0.0)  || (&request:DHCP-Client-IP-Address < $prefix/$mask) ) {
+		if ( (&request:DHCP-Gateway-IP-Address == 0.0.0.0)  || (&request:DHCP-Client-IP-Address < $cidr) ) {
 
 EOT
                  }
@@ -484,17 +483,16 @@ EOT
 
              if ($current_network->contains($ip)) {
                  my $network = $current_network2->network();
-                 my $prefix = $current_network2->network()->nprefix();
-                 my $mask = $current_network2->masklen();
-                 $prefix =~ s/\.$//;
+                 my $cidr = $network->cidr();
+                 $cidr =~ s/\.0//g;
                  if (defined($net{'next_hop'})) {
                      $tags{'config'} .= <<"EOT";
 
-	if (  ( (&request:DHCP-Gateway-IP-Address != 0.0.0.0) && (&request:DHCP-Gateway-IP-Address < $prefix/$mask) ) || (&request:DHCP-Client-IP-Address < $prefix/$mask) ) {
+	if (  ( (&request:DHCP-Gateway-IP-Address != 0.0.0.0) && (&request:DHCP-Gateway-IP-Address < $cidr) ) || (&request:DHCP-Client-IP-Address < $cidr) ) {
 EOT
                  } else {
                      $tags{'config'} .= <<"EOT";
-	if (  (&request:DHCP-Gateway-IP-Address == 0.0.0.0)  || (&request:DHCP-Client-IP-Address < $prefix/$mask) ) {
+	if (  (&request:DHCP-Gateway-IP-Address == 0.0.0.0)  || (&request:DHCP-Client-IP-Address < $cidr) ) {
 
 EOT
                  }
