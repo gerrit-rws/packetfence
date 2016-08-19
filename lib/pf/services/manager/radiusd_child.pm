@@ -431,7 +431,14 @@ EOT
 				&request:DHCP-Site-specific-0 = $net{'type'}
 				&request:DHCP-Site-specific-1 = $interface
 				&request:DHCP-Site-specific-2 = $vlan
-			}
+                        }
+EOT
+                if (isenabled($net{'split_network'})) {
+                    $tags{'config'} .= <<"EOT";
+			rest-dhcprole
+EOT
+                }
+                 $tags{'config'} .= <<"EOT";
 		}
 EOT
             }
@@ -515,9 +522,15 @@ EOT
 			&request:DHCP-Site-specific-0 = $net{'type'}
 			&request:DHCP-Site-specific-1 = $interface
 			&request:DHCP-Site-specific-2 = $vlan
+                }
+EOT
+                if (isenabled($net{'split_network'})) {
+                     $tags{'config'} .= <<"EOT";
+			rest-dhcprole
+EOT
+                }
+                 $tags{'config'} .= <<"EOT";
 		}
-	}
-
 EOT
             }
         }
