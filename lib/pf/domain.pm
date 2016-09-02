@@ -98,12 +98,17 @@ sub join_domain {
     regenerate_configuration();
 
     my $info = $ConfigDomain{$domain};
-    my ($status, $output) = run("/usr/bin/sudo /sbin/ip netns exec $domain /usr/sbin/chroot $chroot_path net ads join -S $info->{ad_server} $info->{dns_name} -s /etc/samba/$domain.conf -U '$info->{bind_dn}%$info->{bind_pass}'");
+    my ($status, $output) = run("/usr/bin/sudo /sbin/ip netns exec $domain /usr/sbin/chroot $chroot_path net ads keytab create -S $info->{ad_server} $info->{dns_name} -s /etc/samba/$domain.conf -U '$info->{bi
+nd_dn}%$info->{bind_pass}'");
     $logger->info("domain join : ".$output);
+
+    my ($status2, $output2) = run("/usr/bin/sudo /sbin/ip netns exec $domain /usr/sbin/chroot $chroot_path net ads join -S $info->{ad_server} $info->{dns_name} -s /etc/samba/$domain.conf -U '$info->{bind_dn}%$info->{bind_pass}'");
+    
+    $logger->info("domain join : ".$output2);
 
     restart_winbinds();
 
-    return $output;
+    return $output . $output2;
 }
 
 =head2 rejoin_domain
